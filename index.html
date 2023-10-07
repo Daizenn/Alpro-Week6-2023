@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Coffee</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px; /* Spasi antara tabel dan elemen lain */
+        }
+    
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px; /* Memperbesar padding */
+            text-align: center; /* Tengahkan teks dalam sel */
+        }
+    
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold; /* Tambahkan tebal pada header */
+        }
+    
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Warna latar belakang setiap baris genap */
+        }
+    
+        tr:nth-child(odd) {
+            background-color: #ffffff; /* Warna latar belakang setiap baris ganjil */
+        }
+    
+        /* Style input dan tombol */
+        #urlInput {
+            padding: 10px;
+            width: 300px;
+        }
+    
+        #fetchDataButton {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    
+        #fetchDataButton:hover {
+            background-color: #0056b3;
+        }
+    </style>    
+</head>
+<body>
+    <h1>Data Coffee</h1>
+    <input type="text" id="urlInput" placeholder="Masukkan URL">
+    <button id="fetchDataButton">Ambil Data</button>
+    <div id="dataTableContainer"></div>
+
+    <script>
+        document.getElementById("fetchDataButton").addEventListener("click", function() {
+            const urlInput = document.getElementById("urlInput").value;
+            const dataTableContainer = document.getElementById("dataTableContainer");
+
+            // Menggunakan Axios untuk mengambil data dari URL
+            axios.get(urlInput)
+                .then(function (response) {
+                    const data = response.data;
+                    const table = document.createElement("table");
+                    const tableHead = document.createElement("thead");
+                    const tableBody = document.createElement("tbody");
+
+                    // Membuat header tabel
+                    const tableHeaderRow = document.createElement("tr");
+                    for (const key in data[0]) {
+                        const th = document.createElement("th");
+                        th.textContent = key;
+                        tableHeaderRow.appendChild(th);
+                    }
+                    tableHead.appendChild(tableHeaderRow);
+
+                    // Membuat baris data
+                    data.forEach(function (item) {
+                        const row = document.createElement("tr");
+                        for (const key in item) {
+                            const cell = document.createElement("td");
+                            cell.textContent = item[key];
+                            row.appendChild(cell);
+                        }
+                        tableBody.appendChild(row);
+                    });
+
+                    table.appendChild(tableHead);
+                    table.appendChild(tableBody);
+                    dataTableContainer.innerHTML = "";
+                    dataTableContainer.appendChild(table);
+                })
+                .catch(function (error) {
+                    console.error("Error:", error);
+                    dataTableContainer.innerHTML = "Terjadi kesalahan saat mengambil data.";
+                });
+        });
+    </script>
+
+    <!-- Sertakan library Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
+</html>
